@@ -4,6 +4,7 @@ services:
     runtime: node
     plan: free
     buildCommand: corepack enable && corepack prepare pnpm@10.4.1 --activate && pnpm install --frozen-lockfile && pnpm build
+    installCommand: corepack enable && corepack prepare pnpm@10.4.1 --activate && pnpm install --frozen-lockfile
     startCommand: corepack enable && corepack prepare pnpm@10.4.1 --activate && pnpm start
     envVars:
       - key: NODE_ENV
@@ -21,5 +22,6 @@ services:
     name: roguard-obfuscator
     dockerfilePath: Dockerfile.obfuscator
     plan: free
+    installCommand: corepack enable && corepack prepare pnpm@10.4.1 --activate && pnpm install --frozen-lockfile
     buildCommand: corepack enable && corepack prepare pnpm@10.4.1 --activate && pnpm install --frozen-lockfile
     startCommand: corepack enable && corepack prepare pnpm@10.4.1 --activate && ./node_modules/.bin/tsx server/tools/obfuscate-lua.ts
