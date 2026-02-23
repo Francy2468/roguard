@@ -1,5 +1,5 @@
 import { useAuth } from "@/_core/hooks/useAuth";
-import { getLoginUrl } from "@/const";
+import { getLoginUrl, getRegisterUrl } from "@/const";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Activity, Code2, Globe, Shield, ShieldBan, ShieldCheck, Zap, Lock, ChevronRight, Star, LayoutDashboard } from "lucide-react";
@@ -14,7 +14,7 @@ const features = [
   { icon: Zap, title: "Instant Alerts", desc: "Get notified immediately when bypass attempts, suspicious activity or new HWID bans are detected.", badge: "Alerts" },
 ];
 
-const techFeatures = ["3-Layer String Encryption","ConstantArray Encryption (2 Layers)","Anti-Tamper Checks","ENV Detection (Roblox)","Variable Renaming","Control Flow Obfuscation","HWID Ban System","S3 Secure Storage","Real-time Logs","Bypass Detection","Google OAuth","Free Forever"];
+const techFeatures = ["3-Layer String Encryption","ConstantArray Encryption (2 Layers)","Anti-Tamper Checks","ENV Detection (Roblox)","Variable Renaming","Control Flow Obfuscation","HWID Ban System","S3 Secure Storage","Real-time Logs","Bypass Detection","Email & Password Auth","Free Forever"];
 
 export default function Home() {
   const { isAuthenticated } = useAuth();
@@ -26,7 +26,10 @@ export default function Home() {
           <div className="flex items-center gap-3">
             {isAuthenticated
               ? <Link href="/dashboard"><Button size="sm" className="bg-primary hover:bg-primary/90 text-primary-foreground gap-2">Dashboard <ChevronRight className="w-4 h-4" /></Button></Link>
-              : <a href={getLoginUrl()}><Button size="sm" className="bg-primary hover:bg-primary/90 text-primary-foreground">Sign in with Google</Button></a>}
+              : <>
+                <Link href={getLoginUrl()}><Button variant="ghost" size="sm">Sign in</Button></Link>
+                <Link href={getRegisterUrl()}><Button size="sm" className="bg-primary hover:bg-primary/90 text-primary-foreground">Sign up</Button></Link>
+              </>}
           </div>
         </div>
       </nav>
@@ -39,7 +42,10 @@ export default function Home() {
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
             {isAuthenticated
               ? <Link href="/dashboard"><Button size="lg" className="bg-primary hover:bg-primary/90 text-primary-foreground gap-2 px-8"><LayoutDashboard className="w-5 h-5" />Go to Dashboard</Button></Link>
-              : <a href={getLoginUrl()}><Button size="lg" className="bg-primary hover:bg-primary/90 text-primary-foreground gap-2 px-8"><Shield className="w-5 h-5" />Get Started — Free</Button></a>}
+              : <>
+                <Link href={getRegisterUrl()}><Button size="lg" className="bg-primary hover:bg-primary/90 text-primary-foreground gap-2 px-8"><Shield className="w-5 h-5" />Get Started — Free</Button></Link>
+                <Link href={getLoginUrl()}><Button size="lg" variant="outline" className="gap-2 px-8">Sign In</Button></Link>
+              </>}
           </div>
           <div className="flex flex-wrap justify-center gap-2 pt-4">{techFeatures.map((f) => <span key={f} className="px-3 py-1 rounded-full text-xs bg-secondary text-muted-foreground border border-border">{f}</span>)}</div>
         </div>
@@ -67,7 +73,7 @@ export default function Home() {
           <p className="text-muted-foreground max-w-xl mx-auto">Join Roguard and get access to all features for free. No credit card required.</p>
           {isAuthenticated
             ? <Link href="/dashboard"><Button size="lg" className="bg-primary hover:bg-primary/90 text-primary-foreground gap-2 px-10"><Shield className="w-5 h-5" />Go to Dashboard</Button></Link>
-            : <a href={getLoginUrl()}><Button size="lg" className="bg-primary hover:bg-primary/90 text-primary-foreground gap-2 px-10"><Shield className="w-5 h-5" />Sign in with Google — Free</Button></a>}
+            : <Link href={getRegisterUrl()}><Button size="lg" className="bg-primary hover:bg-primary/90 text-primary-foreground gap-2 px-10"><Shield className="w-5 h-5" />Sign Up — Free</Button></Link>}
         </div>
       </section>
       <footer className="border-t border-border/50 py-8">

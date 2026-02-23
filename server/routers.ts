@@ -1,8 +1,9 @@
 import { TRPCError } from "@trpc/server";
 import { nanoid } from "nanoid";
 import { z } from "zod";
-import { COOKIE_NAME } from "@shared/const";
+import { COOKIE_NAME, ONE_YEAR_MS } from "@shared/const";
 import { getSessionCookieOptions } from "./_core/cookies";
+import { sdk } from "./_core/sdk";
 import { systemRouter } from "./_core/systemRouter";
 import { protectedProcedure, publicProcedure, router } from "./_core/trpc";
 import { notifyOwner } from "./_core/notification";
@@ -31,6 +32,47 @@ export const appRouter = router({
 
   auth: router({
     me: publicProcedure.query(opts => opts.ctx.user),
+    
+    register: publicProcedure
+      .input(z.object({
+        email: z.string().email().max(320),
+        password: z.string().min(6).max(256),
+        name: z.string().optional().max(255),
+      }))
+      .mutation(async ({ input }) => {
+        const user = await sdk.registerUser(input.email, input.password, input.name);
+        if (!user) throw new TRPCError({ code: "BAD_REQUEST", message: "Email already registered" });
+        return { success: true, userId: user.id };
+      }),
+    
+    login: publicProcedure
+      .input(z.object({
+        email: z.string().email().max(320),
+        password: z.string().min(1).max(256),
+      }))
+      .mutation(async ({ ctx, input }) => {
+        const user = await sdk.loginUser(input.email, input.password);
+        if (!user) throw new TRPCError({ code: "UNAUTHORIZED", message: "Invalid email or password" });
+        
+        const sessionToken = await sdk.createSessionToken(user.id, user.email, user.role);
+        const cookieOptions = getSessionCookieOptions(ctx.req);
+        ctx.res.cookie(COOKIE_NAME, sessionToken, { ...cookieOptions, maxAge: ONE_YEAR_MS });
+
+        return { success: true, user };
+      }),
+    
+    loginGuest: publicProcedure
+      .mutation(async ({ ctx }) => {
+        const user = await sdk.createGuestUser();
+        if (!user) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "Failed to create guest user" });
+        
+        const sessionToken = await sdk.createSessionToken(user.id, user.email, user.role);
+        const cookieOptions = getSessionCookieOptions(ctx.req);
+        ctx.res.cookie(COOKIE_NAME, sessionToken, { ...cookieOptions, maxAge: ONE_YEAR_MS });
+
+        return { success: true, user };
+      }),
+    
     logout: publicProcedure.mutation(({ ctx }) => {
       const cookieOptions = getSessionCookieOptions(ctx.req);
       ctx.res.clearCookie(COOKIE_NAME, { ...cookieOptions, maxAge: -1 });

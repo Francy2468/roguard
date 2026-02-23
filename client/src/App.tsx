@@ -12,6 +12,9 @@ import Obfuscator from "./pages/Obfuscator";
 import RemoteLoader from "./pages/RemoteLoader";
 import Settings from "./pages/Settings";
 import Scripts from "./pages/Scripts";
+import Login from "./pages/Login";
+import Register from "./pages/Register";
+import GuestLogin from "./pages/GuestLogin";
 
 function Router() {
   return (
@@ -24,6 +27,9 @@ function Router() {
       <Route path="/obfuscator" component={Obfuscator} />
       <Route path="/remote-loader" component={RemoteLoader} />
       <Route path="/settings" component={Settings} />
+      <Route path="/auth/login" component={Login} />
+      <Route path="/auth/register" component={Register} />
+      <Route path="/auth/guest" component={GuestLogin} />
       <Route path="/404" component={NotFound} />
       <Route component={NotFound} />
     </Switch>

@@ -13,11 +13,11 @@ import {
 // ─── Users ────────────────────────────────────────────────────────────────────
 export const users = mysqlTable("users", {
   id: int("id").autoincrement().primaryKey(),
-  openId: varchar("openId", { length: 128 }).notNull().unique(),
+  email: varchar("email", { length: 320 }).notNull().unique(),
+  passwordHash: varchar("passwordHash", { length: 255 }),
   name: text("name"),
-  email: varchar("email", { length: 320 }),
   avatar: text("avatar"),
-  loginMethod: varchar("loginMethod", { length: 64 }),
+  loginMethod: varchar("loginMethod", { length: 64 }).default("email"),
   hwid: varchar("hwid", { length: 256 }),
   role: mysqlEnum("role", ["user", "admin"]).default("user").notNull(),
   isBanned: boolean("isBanned").default(false).notNull(),
