@@ -37,7 +37,7 @@ export const appRouter = router({
       .input(z.object({
         email: z.string().email().max(320),
         password: z.string().min(6).max(256),
-        name: z.string().optional().max(255),
+        name: z.string().max(255).optional(),
       }))
       .mutation(async ({ input }) => {
         const user = await sdk.registerUser(input.email, input.password, input.name);
